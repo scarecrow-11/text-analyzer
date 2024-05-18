@@ -173,4 +173,39 @@ export class TextsService {
             numberOfParagraphs: res?.length ? res[0].numberOfParagraphs : 0
         }
     }
+
+    async getLongestWordInParagraphs(id: number) {
+        if (!id) {
+            throw new HttpException('ID is required.', HttpStatus.BAD_REQUEST)
+        }
+        const text = await this.prismaService.text.findUnique({
+            where: { id }
+        })
+        if (!text) {
+            throw new HttpException('Text not found.', HttpStatus.NOT_FOUND)
+        }
+
+        return await this.prismaService.$queryRaw`
+            WITH "paragraphs" AS (
+                SELECT ROW_NUMBER() OVER() AS "paragraphNumber", "filteredParagraphs"."paragraph"
+                FROM (
+                    SELECT regexp_split_to_table("content", '[\n]+') AS "paragraph"
+                    FROM "Text"
+                    WHERE "id" = ${id}
+                ) AS "filteredParagraphs"
+                WHERE "filteredParagraphs"."paragraph" != ''
+            ),
+            "words" AS (
+                SELECT "paragraphs"."paragraphNumber", regexp_split_to_table("paragraph", '[ \s\t\n]+') AS "word"
+                FROM "paragraphs"
+            ),
+            "wordRanks" AS (
+                SELECT "words"."paragraphNumber", "words"."word", ROW_NUMBER() OVER(PARTITION BY "words"."paragraphNumber" ORDER BY char_length("words"."word") DESC) AS "wordRank"
+                FROM "words"
+            )
+            SELECT "wordRanks"."paragraphNumber"::INT, "wordRanks"."word" AS "longestWord"
+            FROM "wordRanks"
+            WHERE "wordRanks"."wordRank" = 1;
+        `
+    }
 }

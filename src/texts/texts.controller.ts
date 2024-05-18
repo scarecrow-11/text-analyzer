@@ -54,4 +54,9 @@ export class TextsController {
     async getNumberOfParagraphs(@Param('id') id: number) {
         return await this.textsService.getNumberOfParagraphs(id)
     }
+
+    @Get('/longest-word-in-paragraphs/:id')
+    async getLongestWordInParagraphs(@Param('id') id: number) {
+        return await this.textsService.getLongestWordInParagraphs(id)
+    }
 }
