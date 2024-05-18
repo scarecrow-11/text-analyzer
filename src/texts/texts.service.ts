@@ -88,7 +88,7 @@ export class TextsService {
 
         const res: { numberOfWords: number }[] = await this.prismaService.$queryRaw`
             WITH "words" AS (
-                SELECT regexp_split_to_table("content", '[ \s+\t+\n+]') AS "word"
+                SELECT regexp_split_to_table("content", '[ \s\t\n]+') AS "word"
                 FROM "Text"
                 WHERE "id" = ${id}
             )
