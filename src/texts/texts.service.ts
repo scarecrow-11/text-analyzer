@@ -74,4 +74,30 @@ export class TextsService {
             where: { id }
         })
     }
+
+    async getNumberOfWords(id: number) {
+        if (!id) {
+            throw new HttpException('ID is required.', HttpStatus.BAD_REQUEST)
+        }
+        const text = await this.prismaService.text.findUnique({
+            where: { id }
+        })
+        if (!text) {
+            throw new HttpException('Text not found.', HttpStatus.NOT_FOUND)
+        }
+
+        const res: { numberOfWords: number }[] = await this.prismaService.$queryRaw`
+            WITH "words" AS (
+                SELECT unnest(regexp_split_to_array("content", '[ \s+\t+\n+]')) AS "word"
+                FROM "Text"
+                WHERE "id" = ${id}
+            )
+            SELECT array_length(array_agg("words"."word"), 1) AS "numberOfWords"
+            FROM "words"
+            WHERE "words"."word" != '';
+        `
+        return {
+            numberOfWords: res?.length ? res[0].numberOfWords : 0
+        }
+    }
 }

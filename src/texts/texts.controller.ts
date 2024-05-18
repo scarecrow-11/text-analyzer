@@ -34,4 +34,9 @@ export class TextsController {
     async delete(@Param('id') id: number) {
         return await this.textsService.delete(id)
     }
+
+    @Get('/number-of-words/:id')
+    async getNumberOfWords(@Param('id') id: number) {
+        return await this.textsService.getNumberOfWords(id)
+    }
 }
