@@ -13,6 +13,7 @@ Add a `.env` file in the root directory with the environment variables as demons
 ```env
 PORT=4000
 DATABASE_URL="postgresql://username:password@localhost:5432/db-name?schema=public"
+SENTRY_DSN="<Sentry DSN URL>"
 ```
 
 ## Installation
