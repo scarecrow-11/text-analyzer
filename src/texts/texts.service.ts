@@ -88,7 +88,7 @@ export class TextsService {
 
         const res: { numberOfWords: number }[] = await this.prismaService.$queryRaw`
             WITH "words" AS (
-                SELECT unnest(regexp_split_to_array("content", '[ \s+\t+\n+]')) AS "word"
+                SELECT regexp_split_to_table("content", '[ \s+\t+\n+]') AS "word"
                 FROM "Text"
                 WHERE "id" = ${id}
             )
@@ -98,6 +98,27 @@ export class TextsService {
         `
         return {
             numberOfWords: res?.length ? res[0].numberOfWords : 0
+        }
+    }
+
+    async getNumberOfCharacters(id: number) {
+        if (!id) {
+            throw new HttpException('ID is required.', HttpStatus.BAD_REQUEST)
+        }
+        const text = await this.prismaService.text.findUnique({
+            where: { id }
+        })
+        if (!text) {
+            throw new HttpException('Text not found.', HttpStatus.NOT_FOUND)
+        }
+
+        const res: { numberOfCharacters: number }[] = await this.prismaService.$queryRaw`
+            SELECT char_length("content") AS "numberOfCharacters"
+            FROM "Text"
+            WHERE "id" = ${id};
+        `
+        return {
+            numberOfCharacters: res?.length ? res[0].numberOfCharacters : 0
         }
     }
 }

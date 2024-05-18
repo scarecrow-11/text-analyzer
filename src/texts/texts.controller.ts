@@ -39,4 +39,9 @@ export class TextsController {
     async getNumberOfWords(@Param('id') id: number) {
         return await this.textsService.getNumberOfWords(id)
     }
+
+    @Get('/number-of-characters/:id')
+    async getNumberOfCharacters(@Param('id') id: number) {
+        return await this.textsService.getNumberOfCharacters(id)
+    }
 }
