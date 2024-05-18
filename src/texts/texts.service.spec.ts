@@ -238,4 +238,39 @@ describe('TextsService', () => {
       expect(res).toEqual(mockOutput[0])
     })
   })
+
+  // Test cases for getNumberOfSentences()
+  describe('getNumberOfSentences()', () => {
+    it('should throw an HttpException with status 400', async () => {
+      try {
+        prismaMock.text.findUnique.mockResolvedValue(null as any)
+        prismaMock.$queryRaw.mockResolvedValue(null as any)
+        await service.getNumberOfSentences(null as any)
+      } catch (e) {
+        expect(e).toBeInstanceOf(HttpException)
+        expect(e.getStatus()).toBe(HttpStatus.BAD_REQUEST)
+        expect(e.message).toBe('ID is required.')
+      }
+    })
+
+    it('should throw an HttpException with status 404', async () => {
+      try {
+        prismaMock.text.findUnique.mockResolvedValue(null as any)
+        prismaMock.$queryRaw.mockResolvedValue(null as any)
+        await service.getNumberOfSentences(1)
+      } catch (e) {
+        expect(e).toBeInstanceOf(HttpException)
+        expect(e.getStatus()).toBe(HttpStatus.NOT_FOUND)
+        expect(e.message).toBe('Text not found.')
+      }
+    })
+
+    it('should return the number of sentences', async () => {
+      const mockOutput = [{ numberOfSentences: 3 }]
+      prismaMock.text.findUnique.mockResolvedValue({} as any)
+      prismaMock.$queryRaw.mockResolvedValue(mockOutput as any)
+      const res = await service.getNumberOfSentences(1)
+      expect(res).toEqual(mockOutput[0])
+    })
+  })
 })
