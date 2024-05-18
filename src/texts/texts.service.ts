@@ -147,4 +147,30 @@ export class TextsService {
             numberOfSentences: res?.length ? res[0].numberOfSentences : 0
         }
     }
+
+    async getNumberOfParagraphs(id: number) {
+        if (!id) {
+            throw new HttpException('ID is required.', HttpStatus.BAD_REQUEST)
+        }
+        const text = await this.prismaService.text.findUnique({
+            where: { id }
+        })
+        if (!text) {
+            throw new HttpException('Text not found.', HttpStatus.NOT_FOUND)
+        }
+
+        const res: { numberOfParagraphs: number }[] = await this.prismaService.$queryRaw`
+            WITH "paragraphs" AS (
+                SELECT regexp_split_to_table("content", '[\n]+') AS "paragraph"
+                FROM "Text"
+                WHERE "id" = ${id}
+            )
+            SELECT array_length(array_agg("paragraphs"."paragraph"), 1) AS "numberOfParagraphs"
+            FROM "paragraphs"
+            WHERE "paragraphs"."paragraph" != '';
+        `
+        return {
+            numberOfParagraphs: res?.length ? res[0].numberOfParagraphs : 0
+        }
+    }
 }

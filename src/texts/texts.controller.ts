@@ -49,4 +49,9 @@ export class TextsController {
     async getNumberOfSentences(@Param('id') id: number) {
         return await this.textsService.getNumberOfSentences(id)
     }
+
+    @Get('/number-of-paragraphs/:id')
+    async getNumberOfParagraphs(@Param('id') id: number) {
+        return await this.textsService.getNumberOfParagraphs(id)
+    }
 }
