@@ -12,16 +12,6 @@ export class TextsController {
         return await this.textsService.create(createTextDto)
     }
 
-    @Get()
-    async findAll() {
-        return await this.textsService.findAll()
-    }
-
-    @Get('/:id')
-    async findOne(@Param('id') id: number) {
-        return await this.textsService.findOne(id)
-    }
-
     @Patch('/:id')
     async update(
         @Param('id') id: number,
@@ -58,5 +48,15 @@ export class TextsController {
     @Get('/longest-word-in-paragraphs/:id')
     async getLongestWordInParagraphs(@Param('id') id: number) {
         return await this.textsService.getLongestWordInParagraphs(id)
+    }
+
+    @Get('/:id')
+    async findOne(@Param('id') id: number) {
+        return await this.textsService.findOne(id)
+    }
+
+    @Get()
+    async findAll() {
+        return await this.textsService.findAll()
     }
 }
