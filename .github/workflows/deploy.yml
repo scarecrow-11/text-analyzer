@@ -60,10 +60,12 @@ jobs:
     - name: Build the App
       run: npm run build
 
-    - name: Upload Build Artifacts
+    - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
         name: nest-build
         path: dist/
+        if-no-files-found: error
+        retention-days: 90
     - name: Check Build Artifact Files
-      run: ls -R
+      run: ls -R dist/
