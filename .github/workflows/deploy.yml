@@ -67,7 +67,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nest-build
-        path: dist/
+        path: |
+          dist/
+          package.json
+          package-lock.json
+          .env
         if-no-files-found: error
         retention-days: 90
     - name: Check Build Artifact Files
