@@ -98,6 +98,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           source: "nest-build/"
           target: "~/text-analyzer-backend/"
+          rm: true
 
   migration:
     runs-on: ubuntu-latest
@@ -115,7 +116,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Copy Environment Variables for Build
+    - name: Copy Environment Variables for Migration
       run: echo "${{ secrets.BUILD_ENV }}" > .env
 
     - name: Install Package Dependencies
@@ -124,3 +125,20 @@ jobs:
     - name: Apply Database Migration
       run: npx prisma migrate deploy
 
+  restart:
+    runs-on: ubuntu-latest
+    needs: migration
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Restart PM2 Service on Remote Host
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            pm2 restart text-analyzer-backend
