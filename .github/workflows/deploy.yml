@@ -86,9 +86,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nest-build
-          path: nest-build
+          path: nest-build/
       - name: Check Downloaded Build Artifact Files
-        run: ls -R
+        run: ls -R nest-build/
 
       - name: Copy Build Artifact to Remote Server with SCP
         uses: appleboy/scp-action@v0.1.7
@@ -96,5 +96,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "nest-build/"
-          target: "nest-build/"
+          source: "nest-build/**"
+          target: "text-analyzer-backend/"
