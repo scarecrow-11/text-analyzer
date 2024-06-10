@@ -48,16 +48,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: List Files
-        run: ls -R
-
       - name: Copy Code to Remote Host with SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "/text-analyzer-backend/"
+          source: "./"
           target: "/home/ubuntu/text-analyzer-backend/"
 
       - name: Build & Start App on Remote Host
