@@ -54,7 +54,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "/"
+          source: "/text-analyzer-backend/"
           target: "/home/ubuntu/text-analyzer-backend/"
 
       - name: Build & Start App on Remote Host
