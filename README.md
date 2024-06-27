@@ -1,6 +1,6 @@
 ## Description
 
-Text Analyzer app written in NestJS, PostgreSQL and Prisma
+A Text Analyzer app written in NestJS, PostgreSQL and Prisma
 
 ## Pre-requisites
 
